@@ -1,0 +1,11 @@
+.user-autocomplete {
+  &__option {
+    font-size: 12px !important;
+    padding: 0 5px 0 5px !important;
+    margin: 0 !important;
+    min-height: 30px !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+}

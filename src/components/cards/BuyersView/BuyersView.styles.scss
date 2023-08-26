@@ -1,0 +1,11 @@
+.buyers-view {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    width: 325px;
+  }
+
+  &__mb-8 {
+    margin-bottom: 8px !important;
+  } 
+}

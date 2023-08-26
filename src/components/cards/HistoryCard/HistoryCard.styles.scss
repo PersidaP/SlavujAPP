@@ -1,0 +1,36 @@
+.history-card-form {
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+
+  &__full-width,
+  &__half-width {
+    > div {
+      > input {
+        font-size: 12px;
+        padding: 0 10px;
+      }
+      height: 50px;
+    }
+  }
+
+  &__button {
+    justify-content: center;
+    width: 46%;
+    height: 50px;
+  }
+
+  &__full-width {
+    width: 95%;
+    padding-bottom: 5px;
+  }
+  &__half-width {
+    width: 46%;
+  }
+  @media (max-width: 600px) {
+    &__half-width {
+      width: 95%;
+    }
+  }
+}

@@ -1,0 +1,45 @@
+.kom-app-table {
+  &__container {
+    margin: 10px 0;
+    max-height: 500px;
+  }
+
+  &__action-icon {
+    padding: 0 !important;
+  }
+
+  &__cell-dense {
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    font-size: 12px !important;
+  }
+
+  &__cell-dense:first-child {
+    padding-left: 15px !important;
+  }
+
+  &__right {
+    text-align: right !important;
+  }
+
+  &__left {
+    text-align: left !important;
+  }
+
+  &__editable {
+    min-width: 30px !important;
+    max-width: 50px !important;
+
+    &__input {
+      font-size: 13px;
+    }
+  }
+
+  &__cancel-icon {
+    color: red;
+  }
+
+  &__checkmark-icon {
+    color: green;
+  }
+}

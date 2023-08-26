@@ -1,0 +1,30 @@
+.add-user-form {
+  &__form-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__text-field {
+    &__padding-b8 {
+      padding-bottom: 8px !important;
+    }
+  }
+
+  &__visibility-icon {
+    cursor: pointer;
+  }
+
+  &__mb-8 {
+    margin-bottom: 8px !important;
+  }
+
+  &__mt-8 {
+    margin-top: 8px !important;
+  }
+
+  &__divider {
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+  }
+
+}

@@ -1,0 +1,36 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+html,
+body {
+  height: 100%;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  min-width: 100%;
+  justify-content: space-between;
+
+  &__main {
+    flex: 1;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+.dark {
+  background-color: #424242;
+}
+.light {
+  background-color: #fafafa;
+}

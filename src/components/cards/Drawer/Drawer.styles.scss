@@ -1,0 +1,10 @@
+.drawer {
+  &__logo {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    height: 60px;
+    width: 130px;
+    justify-content: space-between;
+  }
+}

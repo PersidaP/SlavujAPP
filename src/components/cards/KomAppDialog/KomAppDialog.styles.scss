@@ -1,0 +1,39 @@
+.komapp-dialog {
+  padding: 5px !important;
+  &__content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    @media (min-width: 600px) {
+      min-width: 500px;
+      min-height: 300px;
+    }
+  }
+
+  &__title {
+    display: flex !important;
+  }
+
+  &__close-icon {
+    cursor: pointer;
+  }
+
+  &__actions-container {
+    display: flex;
+    margin-top: 5px;
+
+    &__button {
+      flex-grow: 1;
+      margin: 2px !important;
+    }
+  }
+
+  &__justify {
+    &__space-between {
+      justify-content: space-between;
+    }
+    &__flex-end {
+      justify-content: flex-end;
+    }
+  }
+}

@@ -1,0 +1,27 @@
+.input-autocomplete {
+  font-size: 12px !important;
+  padding: 0 10px !important;
+  margin: 0 !important;
+  min-height: 30px !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  &__input {
+    font-size: 12px !important;
+  }
+
+  &__container {
+    width: 100%;
+
+    hr {
+      margin: 5px 0;
+    }
+
+    &__fullName,
+    &__vat {
+      font-size: 12px;
+      color: #808080;
+    }
+  }
+}

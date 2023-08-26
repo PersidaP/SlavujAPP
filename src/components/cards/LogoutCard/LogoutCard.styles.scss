@@ -1,0 +1,19 @@
+.logout-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 50%;
+  margin: auto;
+
+  &__buttons-container {
+    margin-top: 20px;
+    display: flex;
+    height: 40px;
+    width: 300px;
+    justify-content: space-between;
+
+    &__button {
+      width: 140px;
+    }
+  }
+}

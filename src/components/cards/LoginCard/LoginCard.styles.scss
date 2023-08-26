@@ -1,0 +1,21 @@
+.login-card {
+  &__container {
+    min-width: 275px;
+    max-width: 500px;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__text-field {
+    &__padding-b8 {
+      padding-bottom: 8px !important;
+    }
+  }
+
+  &__visibility-icon {
+    cursor: pointer;
+  }
+}

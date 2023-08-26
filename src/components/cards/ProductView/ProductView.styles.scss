@@ -1,0 +1,15 @@
+.product-view {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    width: 325px;
+  }
+
+  &__text-field {
+    margin-bottom: 8px !important;
+  }
+
+  &__mb-8 {
+    margin-bottom: 8px !important;
+  } 
+}

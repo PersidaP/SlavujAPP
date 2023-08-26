@@ -1,0 +1,27 @@
+.selected-buyer-form {
+  margin-bottom: 8px;
+
+  &__full-width,
+  &__half-width {
+    > div {
+      > input {
+        font-size: 12px;
+        padding: 0 10px;
+      }
+      height: 35px;
+    }
+  }
+
+  &__full-width {
+    width: 95%;
+    padding-bottom: 5px;
+  }
+  &__half-width {
+    width: 46%;
+  }
+  @media (max-width: 600px) {
+    &__half-width {
+      width: 95%;
+    }
+  }
+}

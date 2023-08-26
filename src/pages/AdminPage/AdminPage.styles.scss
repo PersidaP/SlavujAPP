@@ -1,0 +1,16 @@
+.adminPage {
+  &__grid {
+    padding: 10px;
+    justify-content: center;
+
+    &__item {
+      max-width: 600px !important;
+    }
+  }
+
+  &__toolbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+  }
+}

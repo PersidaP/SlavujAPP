@@ -1,0 +1,10 @@
+.orderPage {
+  &__grid {
+    justify-content: center;
+    padding: 20px;
+
+    &__item {
+      max-width: 600px !important;
+    }
+  }
+}
