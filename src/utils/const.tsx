@@ -4,7 +4,8 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import LoginIcon from '@mui/icons-material/Login';
 
 export const API_URLS = {
-  baseURI: 'http://localhost:3001',
+  // baseURI: 'http://localhost:3001',
+  baseURI: '194.146.56.40',
   login: '/login',
   user: '/user',
   externalUsers: '/external-users',
