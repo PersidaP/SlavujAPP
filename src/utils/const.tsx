@@ -5,7 +5,7 @@ import LoginIcon from '@mui/icons-material/Login';
 
 export const API_URLS = {
   // baseURI: 'http://localhost:3001',
-  baseURI: '194.146.56.40',
+  baseURI: '194.146.56.40:3001',
   login: '/login',
   user: '/user',
   externalUsers: '/external-users',
