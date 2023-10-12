@@ -247,6 +247,7 @@ const AddOrderForm = () => {
       orderValueVAT: 10,
       orderRebate: 10,
       orderBuyer: selectedBuyer,
+      orderLocation: selectedLocation?.buyerId,
       orderProducts: positions,
       orderComment: comment,
     };
