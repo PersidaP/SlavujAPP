@@ -20,6 +20,20 @@ const getUserBuyers = async (username?: string) => {
   }
 };
 
+const getPayers = async (payer: string) => {
+  try {
+    const url = `${API_URLS.baseURI}${API_URLS.payers}?payer=${encodeURIComponent(payer)}`;
+    const { data } = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(sessionStorage.getItem('token')!).token} `,
+      },
+    });
+    return data;
+  } catch (err) {
+    console.log('Error while fetching user buyers from the server', err);
+  }
+};
+
 const getAllBuyers = async () => {
   try {
     const url = `${API_URLS.baseURI}${API_URLS.allBuyers} `;
@@ -37,4 +51,5 @@ const getAllBuyers = async () => {
 export const BuyerApi = {
   getUserBuyers,
   getAllBuyers,
+  getPayers,
 };

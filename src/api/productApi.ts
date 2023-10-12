@@ -15,9 +15,10 @@ const getProduct = async (id: number) => {
   }
 };
 
-const getAllProducts = async () => {
+const getAllProducts = async (buyer: string) => {
   try {
-    const url = `${API_URLS.baseURI}${API_URLS.products}`;
+    if (!buyer) return null;
+    const url = `${API_URLS.baseURI}${API_URLS.products}?buyer=${encodeURIComponent(buyer)}`;
     const { data } = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${JSON.parse(sessionStorage.getItem('token')!).token}`,

@@ -69,6 +69,7 @@ export const mockedOrders: IOrder[] = [
     orderPaymentDue: 100,
     orderProducts: mockedProducts,
     orderBuyer: mockedBuyers[0],
+    orderComment: ''
   },
   {
     orderId: 'vfsavasfvasfdvsa',
@@ -80,6 +81,7 @@ export const mockedOrders: IOrder[] = [
     orderPaymentDue: 100,
     orderProducts: mockedProducts,
     orderBuyer: mockedBuyers[1],
+    orderComment: ''
   },
   {
     orderId: 'zxcvkljcasdfsnm',
@@ -91,5 +93,6 @@ export const mockedOrders: IOrder[] = [
     orderPaymentDue: 100,
     orderProducts: mockedProducts,
     orderBuyer: mockedBuyers[0],
+    orderComment: ''
   },
 ];

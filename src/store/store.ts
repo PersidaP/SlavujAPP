@@ -28,6 +28,7 @@ export const drawerAtom = atom(false);
 export const themeAtom = atom<'light' | 'dark'>('dark');
 
 export const selectedBuyerAtom = atom(defaultSelectedBuyerAtom);
+export const selectedLocationAtom = atom(defaultSelectedBuyerAtom);
 export const selectedBuyersAtom = atom(defaultSelectedBuyersAtom);
 export const selectedProductAtom = atom(defaultSelectedProduct);
 export const selectedExternalUserAtom = atom(defaultSelectedExternalUser);

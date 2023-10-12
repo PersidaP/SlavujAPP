@@ -1,20 +1,40 @@
 import { Grid } from '@mui/material';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import { API } from '../../api/API';
 import AddOrderForm from '../../components/cards/AddOrderForm/AddOrderForm';
 import { IBuyer, IProduct, IResponse } from '../../interfaces/interfaces';
-import { buyersAtom, productsAtom } from '../../store/store';
+import { buyersAtom, productsAtom, selectedBuyerAtom } from '../../store/store';
 import './OrderPage.styles.scss';
 import { trackPromise } from 'react-promise-tracker';
 
 const OrderPage = () => {
   const [_, setProducts] = useAtom(productsAtom);
   const [_buyers, setBuyers] = useAtom(buyersAtom);
+  const selectedBuyer = useAtomValue(selectedBuyerAtom);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const res: Partial<IResponse> | null | undefined = await trackPromise(API.ProductApi.getAllProducts());
+    const fetchBuyers = async () => {
+      const res: Partial<IResponse> | null | undefined = await trackPromise(API.BuyerApi.getUserBuyers());
+      if (!res) {
+        return console.error('Error, could not reach the server while fetching buyers.');
+      }
+      const { error, data } = res;
+      if (error) {
+        return console.error('Error while fetching buyers.', error);
+      }
+      if (data && !error) {
+        setBuyers(data as Array<IBuyer>);
+      }
+    };
+    fetchBuyers();
+  }, [setBuyers]);
+
+
+  useEffect(() => {
+    if (selectedBuyer) {
+      const fetchProducts = async () => {
+      const res: Partial<IResponse> | null | undefined = await trackPromise(API.ProductApi.getAllProducts(selectedBuyer.buyerId));
       if (!res) {
         return console.error('Error, could not reach the server while fetching products.');
       }
@@ -32,22 +52,11 @@ const OrderPage = () => {
         setProducts(products);
       }
     };
-    const fetchBuyers = async () => {
-      const res: Partial<IResponse> | null | undefined = await trackPromise(API.BuyerApi.getUserBuyers());
-      if (!res) {
-        return console.error('Error, could not reach the server while fetching buyers.');
-      }
-      const { error, data } = res;
-      if (error) {
-        return console.error('Error while fetching buyers.', error);
-      }
-      if (data && !error) {
-        setBuyers(data as Array<IBuyer>);
-      }
-    };
     fetchProducts();
-    fetchBuyers();
-  }, [setProducts, setBuyers]);
+
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[selectedBuyer])
 
   return (
     <Grid className='orderPage__grid' container spacing={2}>

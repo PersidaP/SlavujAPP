@@ -48,6 +48,7 @@ export interface IOrder {
   orderPaymentDue: number;
   orderBuyer: IBuyer;
   orderProducts: Array<Partial<IProduct>>;
+  orderComment: string;
 }
 
 export interface IOrderModel {

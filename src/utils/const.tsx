@@ -4,7 +4,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import LoginIcon from '@mui/icons-material/Login';
 
 export const API_URLS = {
-  baseURI: 'http://194.146.56.40:3001',
+  baseURI: 'http://localhost:3001',
   login: '/login',
   user: '/user',
   externalUsers: '/external-users',
@@ -14,6 +14,7 @@ export const API_URLS = {
   products: '/products',
   tokenCheck: '/check',
   orderHistory: '/order-history',
+  payers: '/payers',
 };
 
 export const DRAWER_ITEMS: IDrawerItem[] = [
@@ -94,6 +95,7 @@ export const defaultOrderState: IOrder = {
   orderPaymentDue: 0,
   orderBuyer: defaultBuyerState,
   orderProducts: [defaultProductState],
+  orderComment: '',
 };
 
 export const positionDefaultState: IPosition = {

@@ -43,7 +43,7 @@ const SelectBuyersCard = () => {
     setSelectedBuyers(selectedBuyers.filter((buyer) => buyer.buyerId !== item.buyerId));
   };
 
-  const handleAutocompleteSelected = (value: IData, type: 'buyer' | 'product' | 'externalUser', reason?: string) => {
+  const handleAutocompleteSelected = (value: IData, type: 'buyer' | 'product' | 'externalUser' | 'location', reason?: string) => {
     switch (type) {
       case 'buyer': {
         if (reason === 'clear') {
@@ -85,7 +85,12 @@ const SelectBuyersCard = () => {
           ] as Array<ITableAction>
         }
       />
-      <BuyerCard autocompleteBuyers={autocompleteBuyers} handleAutocompleteSelected={handleAutocompleteSelected} />
+      <BuyerCard
+        autocompleteBuyers={autocompleteBuyers}
+        handleAutocompleteSelected={handleAutocompleteSelected}
+        label='Kupac'
+        type='buyer'
+      />
       <Button
         className='select-buyers-card__mt-5'
         fullWidth={true}

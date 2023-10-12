@@ -1,9 +1,9 @@
-import { Button, Card, CardContent, Typography } from '@mui/material';
+import { Button, Card, CardContent, TextField, Typography } from '@mui/material';
 import { useAtomValue, useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import { API } from '../../../api/API';
 import { IBuyer, IDialogAction, IPosition, IProduct, ISnackbar, ITableColumn } from '../../../interfaces/interfaces';
-import { buyersAtom, productsAtom, selectedBuyerAtom, selectedProductAtom } from '../../../store/store';
+import { buyersAtom, productsAtom, selectedBuyerAtom, selectedLocationAtom, selectedProductAtom } from '../../../store/store';
 import { defaultBuyerState, defaultProductState, defaultSnackbarOptions } from '../../../utils/const';
 import { IData } from '../../parts/InputAutocomplete/InputAutocomplete';
 import BuyerCard from '../BuyerCard/BuyerCard';
@@ -28,6 +28,8 @@ const AddOrderForm = () => {
   const buyers = useAtomValue<Array<IBuyer>>(buyersAtom);
   const products = useAtomValue<Array<IProduct>>(productsAtom);
   const [selectedBuyer, setSelectedBuyer] = useAtom(selectedBuyerAtom);
+  const [locations, setLocations] = useState<any>([]);
+  const [selectedLocation, setSelectedLocation] = useAtom(selectedLocationAtom);
   const [selectedProduct, setSelectedProduct] = useAtom(selectedProductAtom);
   const [clearAutocomplete, setClearAutocomplete] = useState(false);
   const [snackbarOptions, setSnackbarOptions] = useState<ISnackbar>(defaultSnackbarOptions);
@@ -38,6 +40,8 @@ const AddOrderForm = () => {
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [autocompleteBuyers, setAutocompleteBuyers] = useState<Array<IData>>([]);
   const [autocompleteProducts, setAutocompleteProducts] = useState<Array<IData>>([]);
+  const [autocompleteLocations, setAutocompleteLocations] = useState<Array<IData>>([]);
+  const [comment, setComment] = useState<string>('');
 
   useEffect(() => {
     setAutocompleteBuyers(
@@ -61,12 +65,37 @@ const AddOrderForm = () => {
   }, [products, buyers]);
 
   useEffect(() => {
+    setAutocompleteLocations(
+      locations.map((location: any) => {
+        return {
+          id: location.buyerId,
+          name: location.buyerName,
+          vat: location.buyerVATCode || '',
+        };
+      })
+    );
+  }, [locations]);
+
+  useEffect(() => {
     if (!selectedBuyer.buyerId) {
       setPositions([]);
+      setLocations([]);
+    }
+    if (selectedBuyer.buyerId) {
+      (async () => {
+        const res = await API.BuyerApi.getPayers(selectedBuyer.buyerId);
+        setLocations([...res?.data]);
+      })();
     }
     setClearAutocomplete(false);
     setButtonEnabled(selectedProduct.productId !== '' && selectedBuyer.buyerId !== '' && !!selectedProduct.productQty);
-  }, [selectedProduct, selectedBuyer]);
+  }, [selectedProduct.productId, selectedBuyer.buyerId]);
+
+  useEffect(() => {
+    setSelectedLocation(defaultBuyerState);
+    handleAutocompleteSelected({ id: '', name: '', fullName: '', vat: '' }, 'location', 'clear');
+    setLocations([]);
+  }, [selectedBuyer.buyerId]);
 
   useEffect(() => {
     const timeoutRef = setTimeout(() => {
@@ -82,8 +111,21 @@ const AddOrderForm = () => {
     };
   }, [snackbarOptions]);
 
-  const handleAutocompleteSelected = (value: IData, type: 'buyer' | 'product' | 'externalUser', reason?: string) => {
+  const handleAutocompleteSelected = (value: IData, type: 'buyer' | 'product' | 'externalUser' | 'location', reason?: string) => {
     switch (type) {
+      case 'location': {
+        if (reason === 'clear') {
+          setSelectedLocation(defaultBuyerState);
+          break;
+        }
+        if (value?.id!) {
+          const foundLocation = locations.find((location: any) => location.buyerId === value.id);
+          if (foundLocation) {
+            setSelectedLocation(foundLocation);
+          }
+        }
+        break;
+      }
       case 'buyer': {
         if (reason === 'clear') {
           setSelectedBuyer(defaultBuyerState);
@@ -189,29 +231,39 @@ const AddOrderForm = () => {
     setSelectedProduct(defaultProductState);
   };
 
+  const handleInput = (e: any) => {
+    setComment(e.target.value);
+  };
+
   const handleFinishOrder = async () => {
+    const body = {
+      orderValue: 10000,
+      orderValueVAT: 10,
+      orderRebate: 10,
+      orderBuyer: selectedBuyer,
+      orderProducts: positions,
+      orderComment: comment,
+    };
     await trackPromise(
-      API.OrderApi.createOrder({
-        orderValue: 10000,
-        orderValueVAT: 10,
-        orderRebate: 10,
-        orderBuyer: selectedBuyer,
-        orderProducts: positions,
-      }).then((data) => {
-        setSnackbarOptions({
-          ...snackbarOptions,
-          message: 'Uspesno kreiranje porudzbine!',
-          open: true,
-          severity: 'success',
-        });
-        setPositions([]);
-        // setSnackbarOptions({
-        //   ...snackbarOptions,
-        //   message: 'Doslo je do greske prilikom kreiranja porudzbine!',
-        //   open: openSnackbar,
-        //   severity: 'error',
-        // });
-      })
+      API.OrderApi.createOrder(body)
+        .then((data) => {
+          setComment('');
+          setSnackbarOptions({
+            ...snackbarOptions,
+            message: 'Uspesno kreiranje porudzbine!',
+            open: true,
+            severity: 'success',
+          });
+          setPositions([]);
+        })
+        .catch((err) => {
+          setSnackbarOptions({
+            ...snackbarOptions,
+            message: 'Doslo je do greske prilikom kreiranja porudzbine!',
+            open: true,
+            severity: 'error',
+          });
+        })
     );
   };
 
@@ -219,7 +271,22 @@ const AddOrderForm = () => {
     <div className='add-order-wrapper'>
       <Card className='add-order-form' style={{ minWidth: window.screen.width >= 1280 ? '584px' : '375px' }}>
         <CardContent sx={{ padding: '8px !important' }}>
-          <BuyerCard autocompleteBuyers={autocompleteBuyers} handleAutocompleteSelected={handleAutocompleteSelected} />
+          <BuyerCard
+            key={1}
+            autocompleteBuyers={autocompleteBuyers}
+            handleAutocompleteSelected={handleAutocompleteSelected}
+            label='Kupac'
+            type='buyer'
+          />
+          {locations.length ? (
+            <BuyerCard
+              key={2}
+              autocompleteBuyers={autocompleteLocations}
+              handleAutocompleteSelected={handleAutocompleteSelected}
+              label='Lokacija'
+              type='location'
+            />
+          ) : null}
           {selectedBuyer.buyerId !== '' && (
             <div className='add-order-form__product-card'>
               <ProductsCard
@@ -268,6 +335,21 @@ const AddOrderForm = () => {
               <Typography variant='subtitle1' component='div' align='right' sx={{ width: '100%' }}>
                 Ukupno: {positions.reduce((acc, element) => acc + element.totalPrice, 0).toFixed(2)}
               </Typography>
+              <div style={{ paddingBottom: '25px' }}></div>
+              <Typography variant='subtitle1' component='div' align='center' sx={{ width: '100%' }}>
+                <TextField
+                  multiline
+                  maxRows={4}
+                  rows={4}
+                  minRows={4}
+                  className='add-order-form-input__full-width'
+                  label='Komentar:'
+                  value={comment}
+                  onInput={handleInput}
+                />
+              </Typography>
+              <div style={{ paddingBottom: '25px' }}></div>
+
               <div className='add-order-form__order-card__finish-order-button'>
                 <Button
                   variant='contained'

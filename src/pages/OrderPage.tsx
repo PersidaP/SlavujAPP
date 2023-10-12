@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
 import { API } from '../api/API';
 import AddOrderForm from '../components/cards/AddOrderForm/AddOrderForm';
@@ -6,7 +6,7 @@ import BuyersView from '../components/cards/BuyersView/BuyersView';
 import ProductView from '../components/cards/ProductView/ProductView';
 import KomAppSnackbar from '../components/cards/snackbar/snackbar';
 import { IBuyer, IProduct, IResponse, ISnackbar } from '../interfaces/interfaces';
-import { buyersAtom, productsAtom } from '../store/store';
+import { buyersAtom, productsAtom, selectedBuyerAtom } from '../store/store';
 import { defaultSnackbarOptions } from '../utils/const';
 import { trackPromise } from 'react-promise-tracker';
 
@@ -14,10 +14,11 @@ const OrderPage = () => {
   const [_, setProducts] = useAtom(productsAtom);
   const [_buyers, setBuyers] = useAtom(buyersAtom);
   const [snackbarOptions, setSnackbarOptions] = useState<ISnackbar>(defaultSnackbarOptions);
+  const selectedBuyer = useAtomValue(selectedBuyerAtom);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const res: Partial<IResponse> | null | undefined = await trackPromise(API.ProductApi.getAllProducts());
+      const res: Partial<IResponse> | null | undefined = await trackPromise(API.ProductApi.getAllProducts(selectedBuyer.buyerId));
       if (!res) {
         return setSnackbarOptions({
           ...snackbarOptions,

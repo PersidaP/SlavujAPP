@@ -1,25 +1,34 @@
 import { Accordion, AccordionDetails, AccordionSummary, IconButton } from '@mui/material';
 import InputAutocomplete, { IData } from '../../parts/InputAutocomplete/InputAutocomplete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SelectedBuyerCard from '../SelectedBuyerCard.tsx/SelectedBuyerCard';
-import { selectedBuyerAtom } from '../../../store/store';
+import { selectedBuyerAtom, selectedLocationAtom } from '../../../store/store';
 import { useAtomValue } from 'jotai';
 import './BuyerCard.styles.scss';
 
 interface BuyerCardProps {
   autocompleteBuyers: Array<IData>;
-  handleAutocompleteSelected: (_value: IData, _type: 'buyer' | 'product' | 'externalUser') => void;
+  label: string;
+  type: any;
+  handleAutocompleteSelected: (_value: IData, _type: 'buyer' | 'product' | 'externalUser' | 'location') => void;
 }
 
-const BuyerCard = ({ autocompleteBuyers, handleAutocompleteSelected }: BuyerCardProps) => {
-  const selectedBuyer = useAtomValue(selectedBuyerAtom);
+const BuyerCard = ({ autocompleteBuyers, handleAutocompleteSelected, label, type }: BuyerCardProps) => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+  const selectedBuyer = useAtomValue(selectedBuyerAtom);
+  const selectedLocation = useAtomValue(selectedLocationAtom);
+  const [selected, setSelected] = useState<any>(null);
+
+  useEffect(() => {
+    setSelected(type === 'location' ? selectedLocation : selectedBuyer);
+  }, [selectedBuyer?.buyerId]);
+
   return (
     <Accordion className='buyer-card-accordion' expanded={isAccordionOpen}>
       <AccordionSummary
         expandIcon={
-          <IconButton onClick={() => setIsAccordionOpen(selectedBuyer.buyerId ? !isAccordionOpen : false)}>
+          <IconButton onClick={() => setIsAccordionOpen(selected.buyerId ? !isAccordionOpen : false)}>
             <ExpandMoreIcon />
           </IconButton>
         }
@@ -27,16 +36,18 @@ const BuyerCard = ({ autocompleteBuyers, handleAutocompleteSelected }: BuyerCard
         id='panel1a-header'
       >
         <InputAutocomplete
-          onChange={handleAutocompleteSelected}
+          onChange={(e: any) => {
+            handleAutocompleteSelected(e, type);
+          }}
           className='buyer-card-accordion__summary'
           values={autocompleteBuyers}
-          selectedValue={{ id: selectedBuyer.buyerId, name: selectedBuyer.buyerName }}
-          type='buyer'
-          label='Izaberite kupca'
+          selectedValue={{ id: selected?.buyerId, name: selected?.buyerName }}
+          type={type}
+          label={label}
           clear={false}
         />
       </AccordionSummary>
-      <AccordionDetails>{isAccordionOpen && selectedBuyer.buyerId && <SelectedBuyerCard selectedBuyer={selectedBuyer} />}</AccordionDetails>
+      <AccordionDetails>{isAccordionOpen && selected?.buyerId && <SelectedBuyerCard selectedBuyer={selected} />}</AccordionDetails>
     </Accordion>
   );
 };

@@ -15,7 +15,7 @@ interface InputAutocompleteProps {
   values: Array<IData>;
   selectedValue?: IData;
   label: string;
-  type: 'buyer' | 'product' | 'externalUser' | 'user';
+  type: 'buyer' | 'location' | 'product' | 'externalUser' | 'user';
   clear: boolean;
 }
 
@@ -26,6 +26,10 @@ const InputAutocomplete = ({ onChange, className, values, label, type, selectedV
       setValue(null);
     }
   }, [clear]);
+
+  useEffect(() => {
+    setValue(selectedValue?.id ? selectedValue : null);
+  }, [selectedValue]);
   const filterOptions = createFilterOptions({
     stringify: (option: IData) => {
       let stringifyOptions = option.id + option.name;
