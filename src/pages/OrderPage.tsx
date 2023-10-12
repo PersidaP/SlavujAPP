@@ -61,7 +61,6 @@ const OrderPage = () => {
       });
     }
     if (data && !error) {
-      console.log(data);
       setLocations(data as Array<IBuyer>);
     }
   };
@@ -95,7 +94,6 @@ const OrderPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log(selectedBuyer);
     if (selectedBuyer.buyerId) {
       fetchProducts(selectedBuyer.buyerId);
       fetchLocations(selectedBuyer.buyerId);

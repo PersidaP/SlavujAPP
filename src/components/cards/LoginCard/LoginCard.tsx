@@ -58,7 +58,6 @@ const LoginCard = () => {
       password: passwordInputRef.current.value as string,
     };
     const data: Partial<IResponse> | null | undefined = await trackPromise(API.LoginApi.login(userInfo));
-    console.log(data);
     if (!data) {
       return setSnackbarOptions({
         ...snackbarOptions,

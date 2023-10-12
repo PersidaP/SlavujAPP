@@ -5,7 +5,7 @@ import { useAtomValue } from 'jotai';
 
 interface ProductsCardProps {
   autocompleteProducts: Array<IData>;
-  handleAutocompleteSelected: (_value: IData, _type: 'buyer' | 'product' | 'externalUser') => void;
+  handleAutocompleteSelected: (_value: IData, _type: 'buyer' | 'location' | 'product' | 'externalUser') => void;
   clear: boolean;
 }
 const ProductsCard = ({ autocompleteProducts, handleAutocompleteSelected, clear }: ProductsCardProps) => {

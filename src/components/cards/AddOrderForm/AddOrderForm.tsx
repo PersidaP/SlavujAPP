@@ -5,6 +5,7 @@ import { API } from '../../../api/API';
 import { IBuyer, IDialogAction, IPosition, IProduct, ISnackbar, ITableColumn } from '../../../interfaces/interfaces';
 import {
   buyersAtom,
+  defaultSelectedProduct,
   locationsAtom,
   productsAtom,
   selectedBuyerAtom,
@@ -88,11 +89,16 @@ const AddOrderForm = () => {
       setPositions([]);
     }
     setClearAutocomplete(false);
-    setButtonEnabled(!!selectedProduct?.productId && !!selectedBuyer?.buyerId && !!selectedProduct.productQty);
-  }, [selectedProduct.productId, selectedBuyer.buyerId]);
+    if (!selectedProduct.productId || !selectedBuyer.buyerId || !selectedProduct.productQty) {
+      setButtonEnabled(false);
+    } else {
+      setButtonEnabled(true);
+    }
+  }, [selectedProduct, selectedBuyer]);
 
   useEffect(() => {
     setSelectedLocation(defaultBuyerState);
+    setSelectedProduct(defaultSelectedProduct);
     handleAutocompleteSelected({ id: '', name: '', fullName: '', vat: '' }, 'location', 'clear');
   }, [selectedBuyer.buyerId]);
 
@@ -134,6 +140,7 @@ const AddOrderForm = () => {
           const foundBuyer = buyers.find((buyer) => buyer.buyerId === value.id);
           if (foundBuyer) {
             setSelectedBuyer({ ...foundBuyer });
+            setPositions([]);
           }
         }
         break;
@@ -290,14 +297,40 @@ const AddOrderForm = () => {
               setSelected={setSelectedLocation}
             />
           ) : null}
-          {selectedBuyer.buyerId !== '' && (
+          {locations.length ? (
+            selectedLocation.buyerId && selectedBuyer.buyerId ? (
+              <div className='add-order-form__product-card'>
+                <ProductsCard
+                  autocompleteProducts={autocompleteProducts}
+                  clear={clearAutocomplete}
+                  handleAutocompleteSelected={handleAutocompleteSelected}
+                />
+                {selectedProduct.productId && (
+                  <div className='add-order-form__product-card__selected'>
+                    <SelectedProductCard selectedProduct={selectedProduct} setSelectedProduct={setSelectedProduct} />
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      className='add-order-form__product-card__selected__add-product-button'
+                      fullWidth={true}
+                      size='small'
+                      disabled={!buttonEnabled}
+                      onClick={handleAddOrder}
+                    >
+                      Dodaj proizvod
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ) : null
+          ) : selectedBuyer.buyerId ? (
             <div className='add-order-form__product-card'>
               <ProductsCard
                 autocompleteProducts={autocompleteProducts}
                 clear={clearAutocomplete}
                 handleAutocompleteSelected={handleAutocompleteSelected}
               />
-              {selectedProduct.productId !== '' && (
+              {selectedProduct.productId && (
                 <div className='add-order-form__product-card__selected'>
                   <SelectedProductCard selectedProduct={selectedProduct} setSelectedProduct={setSelectedProduct} />
                   <Button
@@ -314,7 +347,7 @@ const AddOrderForm = () => {
                 </div>
               )}
             </div>
-          )}
+          ) : null}
 
           <KomAppDialog
             open={dialogOpen}
@@ -342,9 +375,7 @@ const AddOrderForm = () => {
               <Typography variant='subtitle1' component='div' align='center' sx={{ width: '100%' }}>
                 <TextField
                   multiline
-                  maxRows={4}
                   rows={4}
-                  minRows={4}
                   className='add-order-form-input__full-width'
                   label='Komentar:'
                   value={comment}
