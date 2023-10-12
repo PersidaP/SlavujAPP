@@ -90,6 +90,8 @@ const SelectBuyersCard = () => {
         handleAutocompleteSelected={handleAutocompleteSelected}
         label='Kupac'
         type='buyer'
+        selected={selectedBuyer}
+        setSelected={setSelectedBuyer}
       />
       <Button
         className='select-buyers-card__mt-5'

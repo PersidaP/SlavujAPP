@@ -3,7 +3,14 @@ import { useAtomValue, useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import { API } from '../../../api/API';
 import { IBuyer, IDialogAction, IPosition, IProduct, ISnackbar, ITableColumn } from '../../../interfaces/interfaces';
-import { buyersAtom, productsAtom, selectedBuyerAtom, selectedLocationAtom, selectedProductAtom } from '../../../store/store';
+import {
+  buyersAtom,
+  locationsAtom,
+  productsAtom,
+  selectedBuyerAtom,
+  selectedLocationAtom,
+  selectedProductAtom,
+} from '../../../store/store';
 import { defaultBuyerState, defaultProductState, defaultSnackbarOptions } from '../../../utils/const';
 import { IData } from '../../parts/InputAutocomplete/InputAutocomplete';
 import BuyerCard from '../BuyerCard/BuyerCard';
@@ -27,8 +34,8 @@ const dialogColumns = [
 const AddOrderForm = () => {
   const buyers = useAtomValue<Array<IBuyer>>(buyersAtom);
   const products = useAtomValue<Array<IProduct>>(productsAtom);
+  const locations = useAtomValue<Array<IBuyer>>(locationsAtom);
   const [selectedBuyer, setSelectedBuyer] = useAtom(selectedBuyerAtom);
-  const [locations, setLocations] = useState<any>([]);
   const [selectedLocation, setSelectedLocation] = useAtom(selectedLocationAtom);
   const [selectedProduct, setSelectedProduct] = useAtom(selectedProductAtom);
   const [clearAutocomplete, setClearAutocomplete] = useState(false);
@@ -62,39 +69,31 @@ const AddOrderForm = () => {
         };
       })
     );
-  }, [products, buyers]);
 
-  useEffect(() => {
-    setAutocompleteLocations(
-      locations.map((location: any) => {
-        return {
-          id: location.buyerId,
-          name: location.buyerName,
-          vat: location.buyerVATCode || '',
-        };
-      })
-    );
-  }, [locations]);
+    if (Array.isArray(locations) && locations.length) {
+      setAutocompleteLocations(
+        locations.map((location: IBuyer) => {
+          return {
+            id: location.buyerId,
+            name: location.buyerName,
+            vat: location.buyerVATCode || '',
+          };
+        })
+      );
+    }
+  }, [products, buyers, locations]);
 
   useEffect(() => {
     if (!selectedBuyer.buyerId) {
       setPositions([]);
-      setLocations([]);
-    }
-    if (selectedBuyer.buyerId) {
-      (async () => {
-        const res = await API.BuyerApi.getPayers(selectedBuyer.buyerId);
-        setLocations([...res?.data]);
-      })();
     }
     setClearAutocomplete(false);
-    setButtonEnabled(selectedProduct.productId !== '' && selectedBuyer.buyerId !== '' && !!selectedProduct.productQty);
+    setButtonEnabled(!!selectedProduct?.productId && !!selectedBuyer?.buyerId && !!selectedProduct.productQty);
   }, [selectedProduct.productId, selectedBuyer.buyerId]);
 
   useEffect(() => {
     setSelectedLocation(defaultBuyerState);
     handleAutocompleteSelected({ id: '', name: '', fullName: '', vat: '' }, 'location', 'clear');
-    setLocations([]);
   }, [selectedBuyer.buyerId]);
 
   useEffect(() => {
@@ -121,7 +120,7 @@ const AddOrderForm = () => {
         if (value?.id!) {
           const foundLocation = locations.find((location: any) => location.buyerId === value.id);
           if (foundLocation) {
-            setSelectedLocation(foundLocation);
+            setSelectedLocation({ ...foundLocation });
           }
         }
         break;
@@ -134,7 +133,7 @@ const AddOrderForm = () => {
         if (value?.id!) {
           const foundBuyer = buyers.find((buyer) => buyer.buyerId === value.id);
           if (foundBuyer) {
-            setSelectedBuyer(foundBuyer);
+            setSelectedBuyer({ ...foundBuyer });
           }
         }
         break;
@@ -277,6 +276,8 @@ const AddOrderForm = () => {
             handleAutocompleteSelected={handleAutocompleteSelected}
             label='Kupac'
             type='buyer'
+            selected={selectedBuyer}
+            setSelected={setSelectedBuyer}
           />
           {locations.length ? (
             <BuyerCard
@@ -285,6 +286,8 @@ const AddOrderForm = () => {
               handleAutocompleteSelected={handleAutocompleteSelected}
               label='Lokacija'
               type='location'
+              selected={selectedLocation}
+              setSelected={setSelectedLocation}
             />
           ) : null}
           {selectedBuyer.buyerId !== '' && (

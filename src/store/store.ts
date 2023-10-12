@@ -22,6 +22,7 @@ export const defaultSelectedExternalUser: IExternalUser = defaultExternalUserSta
 export const userAtom = atom(defaultUserState);
 export const productsAtom = atom(defaultProductsAtom);
 export const buyersAtom = atom(defaultBuyersAtom);
+export const locationsAtom = atom(defaultBuyersAtom);
 export const usersAtom = atom(defaultUsersAtom);
 export const externalUsersAtom = atom<Array<IExternalUser>>(defaultExternalUsersAtom);
 export const drawerAtom = atom(false);

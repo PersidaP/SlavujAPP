@@ -12,13 +12,14 @@ interface BuyerCardProps {
   label: string;
   type: any;
   handleAutocompleteSelected: (_value: IData, _type: 'buyer' | 'product' | 'externalUser' | 'location') => void;
+  selected: any;
+  setSelected: any;
 }
 
-const BuyerCard = ({ autocompleteBuyers, handleAutocompleteSelected, label, type }: BuyerCardProps) => {
+const BuyerCard = ({ autocompleteBuyers, handleAutocompleteSelected, label, type, selected, setSelected }: BuyerCardProps) => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const selectedBuyer = useAtomValue(selectedBuyerAtom);
   const selectedLocation = useAtomValue(selectedLocationAtom);
-  const [selected, setSelected] = useState<any>(null);
 
   useEffect(() => {
     setSelected(type === 'location' ? selectedLocation : selectedBuyer);
